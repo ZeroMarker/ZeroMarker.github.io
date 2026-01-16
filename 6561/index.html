@@ -126,7 +126,7 @@
 </head>
 <body>
     <div class="game-container">
-        <h1>19683</h1>
+        <h1>6561</h1>
         <div>
             <div id="score">0</div>
             <div id="best">0</div>
@@ -134,7 +134,7 @@
         <div id="game">
             <div id="overlay-win" class="overlay">
                 <h2>你赢了！</h2>
-                <p>达到了 19683！</p>
+                <p>达到了 6561！</p>
                 <button class="restart-btn" onclick="keepPlaying()">继续玩</button>
                 <button class="restart-btn" onclick="restartGame()">重新开始</button>
             </div>
@@ -146,8 +146,8 @@
         </div>
         <div id="instructions">
             用方向键 / WASD 或滑动手指<br>
-            三个相同数字合并成下一个（3个3→9, 3个9→27, ..., 直到19683）<br>
-            达到 19683 胜利！继续挑战更高分数
+            三个相同数字合并成下一个（3个3→9, 3个9→27, ..., 直到6561）<br>
+            达到 6561 胜利！继续挑战更高分数
         </div>
     </div>
 
@@ -155,7 +155,7 @@
         const SIZE = 6;
         const PADDING = 4;
         const GAP = 4;
-        const POW3 = [0, 3, 9, 27, 81, 243, 729, 2187, 6561, 19683];
+        const POW3 = [0, 3, 9, 27, 81, 243, 729, 2187, 6561];
 
         let grid = [];
         let score = 0;
