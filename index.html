@@ -1,28 +1,266 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="index.css" />
-    <!-- 经典 favicon，也可以用 SVG -->
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="theme-color" content="#0f172a"/>
+    <title>我的工具箱 | Zeromark Apps</title>
 
-    <!-- 苹果设备和部分 Android 用 -->
-    <!--link rel="apple-touch-icon" href="/icon-192.png"-->
-    <!-- 或直接用 SVG（部分 iOS 支持） -->
-    <link rel="apple-touch-icon" href="/icon.svg">
+    <!-- PWA 基础配置 -->
+    <link rel="manifest" href="/manifest.json"/>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml"/>
+    <link rel="apple-touch-icon" href="/icon.svg"/>
 
-    <!-- manifest 链接 -->
-    <link rel="manifest" href="/manifest.json">
-    <title>Websites</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: rgba(30, 41, 59, 0.6);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --border: rgba(148, 163, 184, 0.2);
+        }
+
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.7);
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --border: rgba(226, 232, 240, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.4s ease;
+        }
+
+        /* 背景渐变 + 毛玻璃 */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            z-index: -2;
+            opacity: 0.8;
+        }
+
+        [data-theme="light"]::before {
+            background: linear-gradient(135deg, #e2e8f0 0%, #f8fafc 100%);
+            opacity: 0.6;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 480px;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            border-color: var(--accent);
+        }
+
+        .card-content {
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: var(--accent);
+            color: white;
+        }
+
+        @media (max-width: 640px) {
+            h1 { font-size: 2.2rem; }
+            .apps-grid { gap: 1.25rem; }
+        }
+    </style>
 </head>
-<body>
-    <h3>Programming👌</h3>
-    <!--a href="tips.html">tips</a-->
-    <h3>Word List</h3>
-    <a href="word/index.html">Word-List</a>
-    <h3>6561</h3>
-    <a href="6561/index.html">19683</a>
-</body>
+<body data-theme="dark">
 
+    <button class="theme-toggle" aria-label="切换主题">🌙</button>
+
+    <main>
+        <header>
+            <h1>我的工具箱</h1>
+            <p class="subtitle">常用小工具集合 · 随时随地使用 · 支持离线</p>
+        </header>
+
+        <div class="apps-grid">
+            <a href="word/index.html" class="card">
+                <div class="card-content">
+                    <div class="card-icon">📚</div>
+                    <h2>Word List</h2>
+                    <p>英语单词记忆工具<br>支持导入导出、复习计划</p>
+                </div>
+            </a>
+
+            <a href="6561/index.html" class="card">
+                <div class="card-content">
+                    <div class="card-icon">🔢</div>
+                    <h2>6561</h2>
+                    <p>2048变种</p>
+                </div>
+            </a>
+
+            <!-- 你可以继续添加更多应用 -->
+            <!-- 
+            <a href="xxx/index.html" class="card">
+                <div class="card-content">
+                    <div class="card-icon">🛠️</div>
+                    <h2>新工具名称</h2>
+                    <p>简短描述<br>一句话说明功能</p>
+                </div>
+            </a>
+            -->
+        </div>
+    </main>
+
+    <footer>
+        © 2026 Zeromark | Powered by HTML + CSS + Love
+    </footer>
+
+    <script>
+        // 主题切换
+        const toggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+
+        toggle.addEventListener('click', () => {
+            if (body.dataset.theme === 'dark') {
+                body.dataset.theme = 'light';
+                toggle.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.dataset.theme = 'dark';
+                toggle.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // 加载保存的主题
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.dataset.theme = savedTheme;
+            toggle.textContent = savedTheme === 'light' ? '☀️' : '🌙';
+        } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+            body.dataset.theme = 'light';
+            toggle.textContent = '☀️';
+        }
+    </script>
+</body>
 </html>
