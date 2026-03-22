@@ -9,7 +9,7 @@
     <div id="content"></div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-    fetch('document.md')
+    fetch('sim.md')
     .then(r => r.text())
     .then(text => {
         document.getElementById('content').innerHTML = marked.parse(text);
