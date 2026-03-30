@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magazine Layout - Pretext Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: #f5f5f0;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    .magazine {
+      max-width: 1200px;
+      margin: 40px auto;
+      background: #fff;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    /* Header */
+    .magazine-header {
+      text-align: center;
+      padding: 40px 20px;
+      border-bottom: 3px double #1a1a1a;
+    }
+
+    .magazine-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .magazine-date {
+      font-size: 14px;
+      color: #666;
+      letter-spacing: 2px;
+    }
+
+    /* Article Header */
+    .article-header {
+      padding: 50px 60px 30px;
+    }
+
+    .article-category {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #c44;
+      margin-bottom: 15px;
+    }
+
+    .article-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .article-subtitle {
+      font-size: 20px;
+      color: #555;
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .author-byline {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 25px;
+      padding-top: 25px;
+      border-top: 1px solid #ddd;
+    }
+
+    .author-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .author-info {
+      font-size: 14px;
+    }
+
+    .author-name {
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .author-role {
+      color: #666;
+      font-size: 13px;
+    }
+
+    /* Main Content */
+    .article-body {
+      padding: 0 60px 60px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px 1fr;
+      gap: 40px;
+      margin-top: 30px;
+    }
+
+    .content-column {
+      font-size: 16px;
+      text-align: justify;
+    }
+
+    /* Drop Cap */
+    .drop-cap {
+      float: left;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 84px;
+      line-height: 70px;
+      padding: 10px 15px 0 0;
+      color: #1a1a1a;
+    }
+
+    /* Pull Quote */
+    .pull-quote-container {
+      grid-column: 2;
+      align-self: start;
+    }
+
+    .pull-quote {
+      background: #1a1a1a;
+      color: #fff;
+      padding: 30px 25px;
+      position: sticky;
+      top: 40px;
+    }
+
+    .pull-quote-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      line-height: 1.5;
+      font-style: italic;
+      margin-bottom: 15px;
+    }
+
+    .pull-quote-author {
+      font-size: 13px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Feature Image */
+    .feature-image {
+      grid-column: 1 / -1;
+      margin: 40px 0;
+    }
+
+    .feature-image img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-caption {
+      font-size: 13px;
+      color: #666;
+      padding: 15px 0;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Section Divider */
+    .section-divider {
+      height: 2px;
+      background: linear-gradient(to right, transparent, #1a1a1a, transparent);
+      margin: 40px 0;
+    }
+
+    /* Subheading */
+    .subheading {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 28px;
+      font-weight: 600;
+      margin: 35px 0 20px;
+      color: #1a1a1a;
+    }
+
+    /* Inline Image */
+    .inline-image {
+      margin: 25px 0;
+    }
+
+    .inline-image img {
+      width: 100%;
+      border-radius: 4px;
+    }
+
+    .inline-image-caption {
+      font-size: 12px;
+      color: #888;
+      margin-top: 10px;
+    }
+
+    /* Footer */
+    .article-footer {
+      padding: 40px 60px;
+      background: #fafafa;
+      border-top: 1px solid #eee;
+    }
+
+    .tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      background: #1a1a1a;
+      color: #fff;
+      padding: 6px 14px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .share-section {
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* Canvas for text rendering */
+    #text-canvas {
+      display: block;
+      width: 100%;
+    }
+
+    /* Loading state */
+    .loading {
+      text-align: center;
+      padding: 100px;
+      font-size: 18px;
+      color: #666;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pull-quote-container {
+        grid-column: 1;
+        order: -1;
+      }
+
+      .pull-quote {
+        position: static;
+        margin-bottom: 30px;
+      }
+
+      .magazine {
+        margin: 0;
+      }
+
+      .article-header,
+      .article-body,
+      .article-footer {
+        padding-left: 25px;
+        padding-right: 25px;
+      }
+
+      .article-title {
+        font-size: 32px;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="magazine">
+    <header class="magazine-header">
+      <h1 class="magazine-title">Chronicle</h1>
+      <p class="magazine-date">Volume 42 • March 2026 • The Future of Design</p>
+    </header>
+
+    <header class="article-header">
+      <p class="article-category">Technology & Culture</p>
+      <h2 class="article-title" id="article-title">The Art of Digital Typography</h2>
+      <p class="article-subtitle" id="article-subtitle">How modern web technologies are revolutionizing the way we read and experience text online</p>
+      
+      <div class="author-byline">
+        <div class="author-avatar"></div>
+        <div class="author-info">
+          <p class="author-name">Elena Richardson</p>
+          <p class="author-role">Senior Design Editor</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <div class="content-grid">
+        <div class="content-column" id="column-left">
+          <p id="intro-text">Loading article...</p>
+        </div>
+
+        <div class="pull-quote-container">
+          <div class="pull-quote">
+            <p class="pull-quote-text" id="pull-quote-text">"Typography is the craft of endowing human language with a durable visual form."</p>
+            <p class="pull-quote-author">— Robert Bringhurst</p>
+          </div>
+        </div>
+
+        <div class="content-column" id="column-right">
+          <p id="main-text">Continue reading...</p>
+        </div>
+
+        <div class="feature-image">
+          <canvas id="text-canvas"></canvas>
+          <p class="image-caption">Figure 1: Visual representation of text flow in a multi-column layout, demonstrating the precision of modern text measurement algorithms.</p>
+        </div>
+
+        <div class="content-column" style="grid-column: 1 / -1;">
+          <h3 class="subheading" id="section-1">The Evolution of Web Typography</h3>
+          <p id="section-1-text">For decades, web designers were limited to a handful of system fonts. The revolution began with web fonts, but true typographic control remained elusive...</p>
+          
+          <div class="section-divider"></div>
+          
+          <h3 class="subheading" id="section-2">Beyond DOM Measurements</h3>
+          <p id="section-2-text">Traditional text layout relies heavily on DOM measurements, triggering expensive reflow calculations. Modern approaches eliminate this bottleneck entirely...</p>
+          
+          <div class="inline-image">
+            <canvas id="comparison-canvas"></canvas>
+            <p class="inline-image-caption">Figure 2: Comparison of traditional DOM-based layout (top) versus canvas-based measurement (bottom), showing the performance difference.</p>
+          </div>
+          
+          <h3 class="subheading" id="section-3">The Future of Reading</h3>
+          <p id="section-3-text">As we look toward the future, the convergence of advanced text measurement, variable fonts, and responsive design promises an unprecedented reading experience...</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="article-footer">
+      <div class="tags">
+        <span class="tag">Typography</span>
+        <span class="tag">Web Design</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">Performance</span>
+      </div>
+      <p class="share-section">Share this article • © 2026 Chronicle Magazine</p>
+    </footer>
+  </div>
+
+  <script type="module">
+    // Import pretext from CDN
+    import { prepare, layout, prepareWithSegments, layoutWithLines } from 'https://cdn.jsdelivr.net/npm/@chenglou/pretext/+esm';
+
+    // Article content
+    const articleContent = {
+      intro: `Typography has always been the backbone of visual communication. From the earliest printed books to modern digital screens, the way we arrange letters on a page shapes how we absorb information, experience stories, and understand the world around us. Today, we stand at the precipice of a new era in digital typography—one powered by sophisticated algorithms and unprecedented precision.`,
+      
+      main: `The challenge of rendering beautiful, readable text on the web has plagued developers for decades. Unlike print, where every character occupies a fixed, predictable space, the web is fluid and dynamic. Text must adapt to countless screen sizes, resolutions, and user preferences. Traditional approaches rely on the Document Object Model (DOM) to measure text, triggering expensive browser reflow calculations that can cripple performance.`,
+      
+      section1: `The journey from web-safe fonts to today's typographic richness has been long and winding. In the beginning, designers were limited to fonts like Arial, Times New Roman, and Verdana—typefaces guaranteed to exist on most systems. The introduction of @font-face in CSS3 changed everything, allowing designers to embed custom fonts directly in web pages. But this was only the beginning. Variable fonts, OpenType features, and advanced layout capabilities have opened new frontiers. Yet one fundamental problem remained unsolved: how do we measure and layout text efficiently without relying on the browser's layout engine?`,
+      
+      section2: `Enter a new generation of text measurement libraries that bypass the DOM entirely. By leveraging the browser's font rendering engine through the Canvas API, these tools can calculate text dimensions with pixel-perfect accuracy—without triggering reflow. The implications are profound. Complex layouts that once required multiple DOM reads and writes can now be computed in pure arithmetic. Text can flow around images, adapt to irregular containers, and respond to user interactions in real-time. This is not merely a performance optimization; it's a paradigm shift in how we think about text on the web.`,
+      
+      section3: `Looking ahead, the possibilities are exhilarating. Imagine editorial layouts that rival print magazines in their sophistication. E-books that adapt their typography to each reader's preferences without sacrificing design integrity. User interfaces where text and visuals interweave seamlessly. The tools exist today. Libraries like Pretext demonstrate that we can achieve typographic precision previously thought impossible on the web. The future of reading is not just digital—it's beautifully, intelligently designed.`
+    };
+
+    // Font settings
+    const bodyFont = '16px Georgia, serif';
+    const headingFont = '28px Playfair Display, serif';
+    const lineHeight = 28;
+
+    // Wait for fonts to load
+    document.fonts.ready.then(() => {
+      renderArticle();
+    });
+
+    function renderArticle() {
+      // Render intro paragraph with drop cap
+      renderDropCapParagraph('intro-text', articleContent.intro);
+      
+      // Render main content
+      renderParagraph('main-text', articleContent.main);
+      
+      // Render section content
+      renderSection('section-1-text', articleContent.section1);
+      renderSection('section-2-text', articleContent.section2);
+      renderSection('section-3-text', articleContent.section3);
+      
+      // Draw decorative canvas elements
+      drawDecorativeCanvas();
+    }
+
+    function renderDropCapParagraph(elementId, text) {
+      const container = document.getElementById(elementId);
+      const firstLetter = text.charAt(0);
+      const restOfText = text.slice(1);
+      
+      // Create drop cap
+      const dropCap = document.createElement('span');
+      dropCap.className = 'drop-cap';
+      dropCap.textContent = firstLetter;
+      
+      // Prepare and layout remaining text
+      const prepared = prepare(restOfText.trim(), bodyFont, { whiteSpace: 'pre-wrap' });
+      const columnWidth = container.offsetWidth;
+      const { height, lineCount } = layout(prepared, columnWidth, lineHeight);
+      
+      // Create text element
+      const textElement = document.createElement('p');
+      textElement.style.overflow = 'hidden';
+      textElement.textContent = restOfText.trim();
+      
+      container.innerHTML = '';
+      container.appendChild(dropCap);
+      container.appendChild(textElement);
+    }
+
+    function renderParagraph(elementId, text) {
+      const container = document.getElementById(elementId);
+      const prepared = prepare(text, bodyFont, { whiteSpace: 'pre-wrap' });
+      const columnWidth = container.offsetWidth;
+      const { height, lineCount } = layout(prepared, columnWidth, lineHeight);
+      
+      container.textContent = text;
+      container.style.minHeight = `${height}px`;
+    }
+
+    function renderSection(elementId, text) {
+      const container = document.getElementById(elementId);
+      const prepared = prepare(text, bodyFont, { whiteSpace: 'pre-wrap' });
+      const parentWidth = container.parentElement.offsetWidth;
+      const columnWidth = parentWidth / 2 - 30; // Account for gap
+      
+      const { height } = layout(prepared, columnWidth, lineHeight);
+      
+      container.textContent = text;
+      container.style.minHeight = `${height}px`;
+    }
+
+    function drawDecorativeCanvas() {
+      const canvas = document.getElementById('text-canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas size
+      const container = canvas.parentElement;
+      canvas.width = container.offsetWidth * 2; // Retina
+      canvas.height = 400 * 2;
+      canvas.style.height = '400px';
+      
+      ctx.scale(2, 2);
+      const width = canvas.width / 2;
+      const height = canvas.height / 2;
+      
+      // Background
+      ctx.fillStyle = '#f8f8f6';
+      ctx.fillRect(0, 0, width, height);
+      
+      // Draw column guides
+      const columnWidth = (width - 80) / 3;
+      const gap = 20;
+      
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.lineWidth = 1;
+      
+      for (let i = 0; i < 3; i++) {
+        const x = 40 + i * (columnWidth + gap);
+        ctx.strokeRect(x, 40, columnWidth, height - 80);
+      }
+      
+      // Draw text flow lines
+      ctx.strokeStyle = '#667eea';
+      ctx.lineWidth = 2;
+      
+      const sampleText = "Typography flows through columns";
+      const prepared = prepare(sampleText, '14px Georgia, serif');
+      
+      let y = 80;
+      for (let col = 0; col < 3; col++) {
+        const x = 50 + col * (columnWidth + gap);
+        const { height: textHeight } = layout(prepared, columnWidth - 20, 24);
+        
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + columnWidth - 20, y);
+        ctx.stroke();
+        
+        y += 30;
+      }
+      
+      // Draw decorative circles
+      ctx.fillStyle = 'rgba(102, 126, 234, 0.1)';
+      ctx.beginPath();
+      ctx.arc(width / 2, height / 2, 100, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = 'rgba(118, 75, 162, 0.1)';
+      ctx.beginPath();
+      ctx.arc(width / 2 + 50, height / 2 - 30, 60, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Handle resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        renderArticle();
+      }, 250);
+    });
+  </script>
+</body>
+</html>
