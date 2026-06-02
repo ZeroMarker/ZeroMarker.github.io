@@ -161,9 +161,8 @@
         © 2026 Zeromark
     </footer>
 
-    <!-- JSZip CDN -->
+    <!-- JSZip CDN (用于打包 ZIP) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <script>
         // ── 主题切换 ──
@@ -387,6 +386,11 @@
                     return;
                 }
 
+                if (typeof JSZip === 'undefined') {
+                    previewInfo.textContent = '❌ JSZip 库加载失败，请刷新页面重试';
+                    return;
+                }
+
                 showLoading('正在分割图片…');
 
                 try {
@@ -424,7 +428,15 @@
 
                     const zipBlob = await zip.generateAsync({ type: 'blob' });
                     const originalName = sourceFile ? sourceFile.name.replace(/\.[^.]+$/, '') : 'image';
-                    saveAs(zipBlob, `${originalName}_split.zip`);
+                    // 原生下载（无需 FileSaver.js）
+                    const url = URL.createObjectURL(zipBlob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${originalName}_split.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    setTimeout(() => URL.revokeObjectURL(url), 10000);
 
                     hideLoading();
                     previewInfo.textContent = `✅ 下载完成！共 ${total} 块图片已打包为 ZIP`;
@@ -839,13 +851,16 @@
             position: fixed;
             inset: 0;
             z-index: 999;
-            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 1rem;
             background: color-mix(in srgb, var(--bg) 85%, transparent);
             backdrop-filter: blur(8px);
+        }
+
+        .loading-overlay:not([hidden]) {
+            display: flex;
         }
 
         .loading-spinner {
