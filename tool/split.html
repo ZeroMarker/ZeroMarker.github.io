@@ -81,7 +81,7 @@
                         <span>分割线粗细</span>
                         <output id="lineWidthDisplay">2</output><span style="font-size:0.85rem;color:var(--text-muted)"> px</span>
                     </label>
-                    <input type="range" id="lineWidthInput" min="0" max="20" value="2" class="range-slider" />
+                    <input type="range" id="lineWidthInput" min="0" max="40" value="2" class="range-slider" />
                 </div>
 
                 <div class="field-row">
@@ -92,6 +92,14 @@
                         <input type="color" id="lineColorInput" value="#ef4444" class="color-input" />
                         <span id="lineColorText" style="font-size:0.85rem;color:var(--text-muted);font-family:monospace">#ef4444</span>
                     </div>
+                </div>
+
+                <div class="field-row">
+                    <label class="field-label" for="borderWidthInput">
+                        <span>边框线粗细</span>
+                        <output id="borderWidthDisplay">0</output><span style="font-size:0.85rem;color:var(--text-muted)"> px</span>
+                    </label>
+                    <input type="range" id="borderWidthInput" min="0" max="40" value="0" class="range-slider" />
                 </div>
 
                 <div class="field-row" style="grid-template-columns:1fr;gap:0.25rem">
@@ -208,6 +216,8 @@
             const rowsDisplay = document.getElementById('rowsDisplay');
             const colsDisplay = document.getElementById('colsDisplay');
             const lineWidthDisplay = document.getElementById('lineWidthDisplay');
+            const borderWidthInput = document.getElementById('borderWidthInput');
+            const borderWidthDisplay = document.getElementById('borderWidthDisplay');
             const totalPieces = document.getElementById('totalPieces');
             const previewToggle = document.getElementById('previewToggle');
             const downloadBtn = document.getElementById('downloadBtn');
@@ -276,6 +286,29 @@
                 canvas.style.height = canvas.height + 'px';
             }
 
+            function getSplitLayout(rows, cols, lineW, borderWidth) {
+                const imgW = sourceImage.naturalWidth;
+                const imgH = sourceImage.naturalHeight;
+                const totalW = imgW - borderWidth * 2;
+                const totalH = imgH - borderWidth * 2;
+                const cellW = Math.floor((totalW - (lineW * (cols - 1))) / cols);
+                const cellH = Math.floor((totalH - (lineW * (rows - 1))) / rows);
+                const usedW = cols * cellW + (cols - 1) * lineW;
+                const usedH = rows * cellH + (rows - 1) * lineW;
+
+                return {
+                    imgW,
+                    imgH,
+                    totalW,
+                    totalH,
+                    cellW,
+                    cellH,
+                    usedW,
+                    usedH,
+                    isValid: cellW >= 1 && cellH >= 1,
+                };
+            }
+
             // ── 绘制预览 ──
             function drawPreview() {
                 if (!sourceImage) return;
@@ -286,33 +319,58 @@
                 const lineW = parseInt(lineWidthInput.value);
                 const color = lineColorInput.value;
                 const showGrid = previewToggle.checked;
+                const borderWidth = parseInt(borderWidthInput.value);
 
                 ctx.clearRect(0, 0, cw, ch);
                 ctx.drawImage(sourceImage, 0, 0, cw, ch);
 
-                if (showGrid && rows > 0 && cols > 0 && lineW > 0) {
-                    ctx.strokeStyle = color;
-                    ctx.lineWidth = lineW;
+                if (showGrid && rows > 0 && cols > 0) {
+                    const layout = getSplitLayout(rows, cols, lineW, borderWidth);
 
-                    const cellW = cw / cols;
-                    const cellH = ch / rows;
-
-                    // 垂直线
-                    for (let c = 1; c < cols; c++) {
-                        const x = Math.round(c * cellW);
-                        ctx.beginPath();
-                        ctx.moveTo(x, 0);
-                        ctx.lineTo(x, ch);
-                        ctx.stroke();
+                    if (!layout.isValid) {
+                        updateStats();
+                        return;
                     }
 
-                    // 水平线
-                    for (let r = 1; r < rows; r++) {
-                        const y = Math.round(r * cellH);
-                        ctx.beginPath();
-                        ctx.moveTo(0, y);
-                        ctx.lineTo(cw, y);
-                        ctx.stroke();
+                    const scale = cw / layout.imgW;
+                    const toCanvas = value => Math.round(value * scale);
+                    const fillSourceRect = (x, y, width, height) => {
+                        const left = toCanvas(x);
+                        const top = toCanvas(y);
+                        const right = toCanvas(x + width);
+                        const bottom = toCanvas(y + height);
+                        ctx.fillRect(left, top, Math.max(1, right - left), Math.max(1, bottom - top));
+                    };
+                    ctx.fillStyle = color;
+
+                    if (borderWidth > 0) {
+                        fillSourceRect(0, 0, layout.imgW, borderWidth);
+                        fillSourceRect(0, layout.imgH - borderWidth, layout.imgW, borderWidth);
+                        fillSourceRect(0, 0, borderWidth, layout.imgH);
+                        fillSourceRect(layout.imgW - borderWidth, 0, borderWidth, layout.imgH);
+                    }
+
+                    if (lineW > 0) {
+                        for (let c = 1; c < cols; c++) {
+                            const x = borderWidth + c * layout.cellW + (c - 1) * lineW;
+                            fillSourceRect(x, borderWidth, lineW, layout.totalH);
+                        }
+
+                        for (let r = 1; r < rows; r++) {
+                            const y = borderWidth + r * layout.cellH + (r - 1) * lineW;
+                            fillSourceRect(borderWidth, y, layout.totalW, lineW);
+                        }
+                    }
+
+                    const unusedRight = layout.totalW - layout.usedW;
+                    const unusedBottom = layout.totalH - layout.usedH;
+
+                    if (unusedRight > 0) {
+                        fillSourceRect(borderWidth + layout.usedW, borderWidth, unusedRight, layout.totalH);
+                    }
+
+                    if (unusedBottom > 0) {
+                        fillSourceRect(borderWidth, borderWidth + layout.usedH, layout.totalW, unusedBottom);
                     }
                 }
 
@@ -337,6 +395,10 @@
             });
             lineWidthInput.addEventListener('input', () => {
                 lineWidthDisplay.textContent = lineWidthInput.value;
+                drawPreview();
+            });
+            borderWidthInput.addEventListener('input', () => {
+                borderWidthDisplay.textContent = borderWidthInput.value;
                 drawPreview();
             });
             lineColorInput.addEventListener('input', () => {
@@ -370,19 +432,15 @@
                 const rows = parseInt(rowsInput.value);
                 const cols = parseInt(colsInput.value);
                 const lineW = parseInt(lineWidthInput.value);
+                const borderWidth = parseInt(borderWidthInput.value);
                 const format = document.querySelector('input[name="format"]:checked').value;
                 const ext = format === 'jpeg' ? 'jpg' : format;
 
-                // 原图尺寸
-                const imgW = sourceImage.naturalWidth;
-                const imgH = sourceImage.naturalHeight;
+                // 每块尺寸（去掉分割线间隙和边框）
+                const layout = getSplitLayout(rows, cols, lineW, borderWidth);
 
-                // 每块尺寸（去掉分割线间隙）
-                const cellW = Math.floor((imgW - (lineW * (cols - 1))) / cols);
-                const cellH = Math.floor((imgH - (lineW * (rows - 1))) / rows);
-
-                if (cellW < 1 || cellH < 1) {
-                    previewInfo.textContent = '⚠️ 分割线过粗，请减小分割线粗细或行列数';
+                if (!layout.isValid) {
+                    previewInfo.textContent = '⚠️ 分割线或边框过粗，请减小参数';
                     return;
                 }
 
@@ -398,21 +456,21 @@
                     const total = rows * cols;
                     const mimeType = format === 'jpeg' ? 'image/jpeg' : format === 'webp' ? 'image/webp' : 'image/png';
 
-                    const offscreen = document.createElement('canvas');
-                    const offCtx = offscreen.getContext('2d');
-
                     // 计算文件名填充位数
                     const padLen = String(total).length;
 
+                    const offscreen = document.createElement('canvas');
+                    const offCtx = offscreen.getContext('2d');
+
                     for (let r = 0; r < rows; r++) {
                         for (let c = 0; c < cols; c++) {
-                            const sx = Math.round(c * (cellW + lineW));
-                            const sy = Math.round(r * (cellH + lineW));
+                            const sx = borderWidth + Math.round(c * (layout.cellW + lineW));
+                            const sy = borderWidth + Math.round(r * (layout.cellH + lineW));
 
-                            offscreen.width = cellW;
-                            offscreen.height = cellH;
-                            offCtx.clearRect(0, 0, cellW, cellH);
-                            offCtx.drawImage(sourceImage, sx, sy, cellW, cellH, 0, 0, cellW, cellH);
+                            offscreen.width = layout.cellW;
+                            offscreen.height = layout.cellH;
+                            offCtx.clearRect(0, 0, layout.cellW, layout.cellH);
+                            offCtx.drawImage(sourceImage, sx, sy, layout.cellW, layout.cellH, 0, 0, layout.cellW, layout.cellH);
 
                             const blob = await new Promise(resolve => {
                                 offscreen.toBlob(b => resolve(b), mimeType, 0.92);
@@ -836,8 +894,6 @@
         .preview-container canvas {
             max-width: 100%;
             height: auto;
-            border-radius: 4px;
-            box-shadow: 0 4px 20px var(--shadow);
             display: block;
         }
 
