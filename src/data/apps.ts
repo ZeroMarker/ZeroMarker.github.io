@@ -31,7 +31,7 @@ export const apps: AppItem[] = [
   {
     title: '图片分割',
     description: '在线图片分割工具，自定义行列数和分割线粗细，一键打包下载。',
-    href: '/tool/split.html',
+    href: '/tool/',
     icon: '✂️',
     accent: '#f97316',
   },

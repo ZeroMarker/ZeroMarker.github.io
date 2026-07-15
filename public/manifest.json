@@ -1,7 +1,7 @@
 {
-  "name": "Zeromark Apps",
-  "short_name": "Apps",
-  "description": "Zeromark 的常用小工具集合。",
+  "name": "ZeroMarker — Mark Chen",
+  "short_name": "ZeroMarker",
+  "description": "Mark Chen 的个人网站、开源项目与实用工具。",
   "id": "/",
   "start_url": "/",
   "lang": "zh-CN",
@@ -11,7 +11,7 @@
   "background_color": "#101521",
   "theme_color": "#101521",
   "scope": "/",
-  "categories": ["productivity", "utilities"],
+  "categories": ["personalization", "productivity", "utilities"],
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -43,7 +43,7 @@
       "name": "图片分割",
       "short_name": "分割",
       "description": "按行列分割图片并打包下载。",
-      "url": "/tool/split.html",
+      "url": "/tool/",
       "icons": [
         {
           "src": "/icons/icon-192.png",
