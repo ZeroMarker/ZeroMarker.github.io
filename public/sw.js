@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zeromark-apps-v2';
+const CACHE_NAME = 'zeromark-apps-v3';
 
 const CORE_ASSETS = [
   '/',
@@ -8,7 +8,6 @@ const CORE_ASSETS = [
   '/pwa.js',
   '/sw.js',
   '/icon.svg',
-  '/tool/split.html',
   '/icons/apple-touch-icon.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
@@ -19,7 +18,6 @@ const CORE_ASSETS = [
 const LOCAL_NAVIGATION_FALLBACKS = new Map([
   ['/', '/index.html'],
   ['/index.html', '/index.html'],
-  ['/tool/split.html', '/tool/split.html'],
 ]);
 
 self.addEventListener('install', (event) => {

@@ -1,27 +1,90 @@
 ---
 import AppCard from '../components/AppCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import { apps } from '../data/apps';
+import { projects } from '../data/projects';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="我的工具箱 | Zeromark Apps"
-  description="Zeromark 的常用小工具集合，包含单词记忆、数字游戏和 SIM 卡保号信息。"
+  title="Mark Chen — Developer & Builder"
+  description="Mark Chen 的个人网站：AI Agent、开发者工具、系统软件与开源实验。"
 >
-  <ThemeToggle />
+  <header class="site-header">
+    <a class="wordmark" href="/" aria-label="ZeroMarker 首页">ZM<span>.</span></a>
+    <nav aria-label="主导航">
+      <a href="#work">作品</a>
+      <a href="#tools">工具</a>
+      <a href="#about">关于</a>
+      <a href="https://github.com/ZeroMarker" target="_blank" rel="noreferrer">GitHub ↗</a>
+    </nav>
+    <ThemeToggle />
+  </header>
 
-  <main class="page-shell">
-    <header class="hero">
-      <p class="eyebrow">Zeromark Apps</p>
-      <h1>我的工具箱</h1>
-      <p class="subtitle">常用小工具集合，随时打开就能用。</p>
-    </header>
+  <main class="personal-shell">
+    <section class="intro" aria-labelledby="intro-title">
+      <div class="intro-copy">
+        <p class="status"><span></span> Building in public</p>
+        <h1 id="intro-title">把想法做成<br /><em>可运行的东西。</em></h1>
+        <p class="intro-text">
+          我是 Mark，一名独立开发者。专注 AI Agent 基础设施、开发者工具与系统软件，也持续做一些地图、知识和 Web 实验。
+        </p>
+        <div class="intro-actions">
+          <a class="button primary" href="#work">浏览作品 <span aria-hidden="true">↓</span></a>
+          <a class="button" href="mailto:mark.chen.im@gmail.com">联系我</a>
+        </div>
+      </div>
+      <aside class="intro-note" aria-label="当前关注">
+        <span class="note-label">NOW / 2026</span>
+        <p>探索可复现、可观察的 Agent 工作流，以及更轻量的本地开发工具。</p>
+        <div class="stack-list" aria-label="主要技术栈">
+          <span>TypeScript</span><span>Rust</span><span>Python</span><span>Elixir</span>
+        </div>
+      </aside>
+    </section>
 
-    <section class="apps-grid" aria-label="工具列表">
-      {apps.map((app) => <AppCard app={app} />)}
+    <section class="section" id="work" aria-labelledby="work-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Selected work</p>
+          <h2 id="work-title">代表项目</h2>
+        </div>
+        <a href="https://github.com/ZeroMarker?tab=repositories" target="_blank" rel="noreferrer">全部仓库 ↗</a>
+      </div>
+      <div class="projects-list">
+        {projects.map((project, index) => <ProjectCard project={project} index={index} />)}
+      </div>
+    </section>
+
+    <section class="section tools-section" id="tools" aria-labelledby="tools-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Useful corners</p>
+          <h2 id="tools-title">随手做的工具</h2>
+        </div>
+        <p>打开即用，不需要登录。</p>
+      </div>
+      <div class="apps-grid tools-grid">
+        {apps.map((app) => <AppCard app={app} />)}
+      </div>
+    </section>
+
+    <section class="about-section" id="about" aria-labelledby="about-title">
+      <p class="section-kicker">About</p>
+      <div class="about-grid">
+        <h2 id="about-title">持续学习，<br />持续交付。</h2>
+        <div class="about-copy">
+          <p>我喜欢从真实问题出发，用合适而不过度的技术把它解决。这里既有长期维护的工具，也有用于验证想法的小型原型。</p>
+          <p>如果你也在做 Agent、开发者工具、系统软件或有趣的数据产品，欢迎交流。</p>
+          <a href="mailto:mark.chen.im@gmail.com">mark.chen.im@gmail.com ↗</a>
+        </div>
+      </div>
     </section>
   </main>
 
-  <footer class="site-footer">© {new Date().getFullYear()} Zeromark</footer>
+  <footer class="site-footer personal-footer">
+    <span>© {new Date().getFullYear()} Mark Chen</span>
+    <span>Built with Astro · Shenzhen, China</span>
+  </footer>
 </BaseLayout>

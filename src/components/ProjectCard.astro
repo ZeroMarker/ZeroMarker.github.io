@@ -1,0 +1,25 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  index: number;
+}
+
+const { project, index } = Astro.props;
+---
+
+<a class:list={['project-card', { featured: project.featured }]} href={project.href} target="_blank" rel="noreferrer">
+  <span class="project-index">{String(index + 1).padStart(2, '0')}</span>
+  <span class="project-content">
+    <span class="project-topline">
+      <strong>{project.name}</strong>
+      <span class="project-arrow" aria-hidden="true">↗</span>
+    </span>
+    <span class="project-description">{project.description}</span>
+    <span class="project-meta">
+      <span>{project.category}</span>
+      <span>{project.language}</span>
+    </span>
+  </span>
+</a>
