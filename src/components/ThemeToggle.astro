@@ -1,0 +1,28 @@
+<button class="theme-toggle" type="button" aria-label="切换为浅色主题" title="切换主题">
+  <span aria-hidden="true">🌙</span>
+</button>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  const icon = toggle?.querySelector('span');
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  const root = document.documentElement;
+
+  function syncThemeButton() {
+    if (!toggle || !icon || !themeColor) return;
+    const isLight = root.dataset.theme === 'light';
+    icon.textContent = isLight ? '☀️' : '🌙';
+    toggle.setAttribute('aria-label', isLight ? '切换为深色主题' : '切换为浅色主题');
+    themeColor.content = isLight ? '#f6f7fb' : '#101521';
+  }
+
+  toggle?.addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light';
+    try {
+      localStorage.setItem('theme', root.dataset.theme);
+    } catch {}
+    syncThemeButton();
+  });
+
+  syncThemeButton();
+</script>

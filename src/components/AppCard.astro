@@ -1,0 +1,17 @@
+---
+import type { AppItem } from '../data/apps';
+
+interface Props {
+  app: AppItem;
+}
+
+const { app } = Astro.props;
+---
+
+<a href={app.href} class="card" style={`--card-accent: ${app.accent}`}>
+  <span class="card-icon" aria-hidden="true">{app.icon}</span>
+  <span class="card-body">
+    <span class="card-title">{app.title}</span>
+    <span class="card-description">{app.description}</span>
+  </span>
+</a>

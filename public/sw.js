@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zeromark-apps-v1';
+const CACHE_NAME = 'zeromark-apps-v2';
 
 const CORE_ASSETS = [
   '/',
