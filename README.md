@@ -28,6 +28,16 @@ Mark Chen（ZeroMarker）的个人网站与 GitHub Pages 入口仓库。
 
 ## 本地预览
 
+可以直接在 GitHub 仓库页面选择 **Code → Codespaces → Create codespace on main**。容器首次启动时会自动运行 `npm ci`，并转发 Astro 使用的 4321 端口。
+
+在 Codespace 终端中启动开发服务器：
+
+```bash
+npm run dev
+```
+
+也可以在本地运行：
+
 ```bash
 npm install
 npm run dev
