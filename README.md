@@ -21,6 +21,7 @@ Mark Chen（ZeroMarker）的个人网站与 GitHub Pages 入口仓库。
 - `/6561/index.html`
 - `/docs/sim/index.html`
 - `/tool/`
+- `/tool/todo/`
 
 这些页面由其他项目仓库发布到 `zeromarker.github.io` 域名下。维护链接时需要按生产站点 URL 检查可达性，不要仅用本仓库文件是否存在来判断它们是否失效。
 

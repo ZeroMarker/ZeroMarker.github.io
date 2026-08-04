@@ -35,4 +35,11 @@ export const apps: AppItem[] = [
     icon: '✂️',
     accent: '#f97316',
   },
+  {
+    title: '待办清单',
+    description: '纯本地待办，数据存在浏览器 localStorage，不联网不登录。',
+    href: '/tool/todo/',
+    icon: '📝',
+    accent: '#10b981',
+  },
 ];
